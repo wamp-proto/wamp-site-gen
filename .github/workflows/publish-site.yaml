@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          repository: git@github.com:wamp-proto/wamp-proto.git
+          repository: wamp-proto/wamp-proto
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
           path: wamp-proto
 
