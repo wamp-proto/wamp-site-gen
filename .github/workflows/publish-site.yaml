@@ -44,7 +44,7 @@ jobs:
       - name: Rename underscore urls in dist
         run: find ./wamp-proto/dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_graphics\//graphics\//g' {} \;
       - run: find ./wamp-proto/dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_images\//images\//g' {} \;
-      - run: find ./wamp-proto/ist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_sources\//sources\//g' {} \;
+      - run: find ./wamp-proto/dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_sources\//sources\//g' {} \;
       - run: find ./wamp-proto/dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_static\//static\//g' {} \;
       - run: rm -rf dist
       - run: cp -r wamp-proto/dist ./
