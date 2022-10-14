@@ -21,7 +21,6 @@ jobs:
           path: wamp-proto
 
       - uses: actions/setup-python@v3
-        working-directory: ./wamp-proto
         with:
           python-version: '3.6'
           cache: 'pip'
