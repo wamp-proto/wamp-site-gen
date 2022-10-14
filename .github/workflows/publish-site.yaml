@@ -13,10 +13,6 @@ jobs:
     environment: github-pages
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.6'
-          cache: 'pip'
 
       - uses: actions/checkout@v3
         with:
@@ -25,6 +21,12 @@ jobs:
           path: wamp-proto
 
       - run: cd wamp-proto
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.6'
+          cache: 'pip'
+
       - run: export PATH=$PATH:$HOME/.local/bin
       - run: export WAMP_BUILD_ID="$(date -u "+%Y%m%d")-$(git rev-parse --short ${{ github.event.client_payload.commit_sha }})"
       - run: sudo apt update
