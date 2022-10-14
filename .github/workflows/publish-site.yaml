@@ -1,0 +1,54 @@
+name: Publishing new site
+
+on: [repository_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-to-gh-pages:
+    name: Deploy spec site to github pages
+    if: github.event.action == 'publish'
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.6'
+          cache: 'pip'
+
+      - uses: actions/checkout@v3
+        with:
+          repository: git@github.com:wamp-proto/wamp-proto.git
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          path: wamp-proto
+
+      - run: cd wamp-proto
+      - run: export PATH=$PATH:$HOME/.local/bin
+      - run: export WAMP_BUILD_ID="$(date -u "+%Y%m%d")-$(git rev-parse --short ${{ github.event.client_payload.commit_sha }})"
+      - run: sudo apt update
+      - run: sudo apt install -y xml2rfc libxml2-utils libenchant-2-2 enscript
+      - run: pip install -r requirements.txt
+      - run: wget https://github.com/mmarkdown/mmark/releases/download/v2.2.25/mmark_2.2.25_linux_amd64.tgz
+      - run: tar xvzf mmark_2.2.25_linux_amd64.tgz
+      - run: rm -f ./mmark*.tgz
+      - run: sudo cp ./mmark /usr/local/bin/
+      - run: make build
+      - run: mv dist/_graphics dist/graphics
+      - run: mv dist/_images dist/images
+      - run: mv dist/_sources dist/sources
+      - run: mv dist/_static dist/static
+      - name: Rename underscore urls in dist
+        run: find dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_graphics\//graphics\//g' {} \;
+      - run: find dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_images\//images\//g' {} \;
+      - run: find dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_sources\//sources\//g' {} \;
+      - run: find dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_static\//static\//g' {} \;
+      - run: cd ../
+      - run: rm -rf dist
+      - run: cp -r wamp-proto/dist ./
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: main # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.
