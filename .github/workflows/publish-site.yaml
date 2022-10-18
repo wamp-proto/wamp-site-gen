@@ -48,6 +48,7 @@ jobs:
       - run: find ./wamp-proto/dist -type f \( -name "*.html" -or -name "*.txt" \) -print -exec sed -i 's/_static\//static\//g' {} \;
       - run: rm -rf dist
       - run: cp -r wamp-proto/dist ./
+      - run: cp -r favicons/* dist/
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
